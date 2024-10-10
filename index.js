@@ -7,6 +7,13 @@ const { init } = require("express/lib/application");
 // Creates a new instance of express for our app
 const app = express();
 
+// .use is middleware - something that occurs between the request and response cycle.
+app.use(cors());
+ // We will be using JSON objects to communcate with our backend, no HTML pages.
+app.use(express.json());
+// This will serve the React build when we deploy our app
+app.use(express.static("react-frontend/dist"));
+
 // Create Sequelize instance
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -34,12 +41,7 @@ const users = [
     { firstname: "Sarah" , lastname: "Williams", age: 40, Gender: "male", isAdmin: false },
     { firstname: "David" , lastname: "Brown", age: 40, Gender: "male", isAdmin: false }
 ];
-// .use is middleware - something that occurs between the request and response cycle.
-app.use(cors());
- // We will be using JSON objects to communcate with our backend, no HTML pages.
-app.use(express.json());
-// This will serve the React build when we deploy our app
-app.use(express.static("react-frontend/dist"));
+
 
 // This route will return 'Hello Ikea!' when you go to localhost:8080/ in the browser
 app.get("/", (req, res) => {
@@ -81,11 +83,9 @@ app.delete('/api/users/:id', async (req, res) => {
     res.json({data: `The user with id of ${req.params.id} is removed.`});
 });
 
-
-
-
 // This tells the express application to listen for requests on port 8080
 const port = process.env.PORT || 8080;
-app.listen(port, async () => {
-    console.log(`Server started at ${port}`);
+server =  app.listen(port, async () => {
+    console.log(`Server started at ${port}`)
 });
+module.exports = {app, server} 
